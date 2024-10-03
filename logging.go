@@ -8,15 +8,22 @@ import (
 )
 
 type loggingService struct {
-	next priceGetter
+	next PriceGetter
 }
 
-func (s *loggingService) LogGetPrice(ctx context.Context, key string) (price float64, err error) {
+func NewLoggingService(next PriceGetter) PriceGetter {
+	return &loggingService{
+		next: next,
+	}
+}
+
+func (s *loggingService) GetPrice(ctx context.Context, key string) (price float64, err error) {
 	defer func(start time.Time) {
 		logrus.WithFields(logrus.Fields{
-			"time":  time.Since(start),
-			"err":   err,
-			"price": price,
+			"requestID": ctx.Value("requestID"),
+			"time":      time.Since(start),
+			"err":       err,
+			"price":     price,
 		}).Info("GetPrice")
 	}(time.Now())
 

@@ -1,14 +1,18 @@
 Building a microservice in GoLang, retieving the prices of some crypto assets
+Decorator pattern is used, so if I need to change the logic, I dont touch any other functionalities such as logging in the process
+in this microservice everything will be written in the root package (main) to avoid circular dependency
 
 
 Service:
 service.go has a priceGetter interface and the function GetPrices... initially the service uses a mock prices map, and a function MockPriceAPICall to simulate getting the price from an API
 Purpose: This file contains the core "business" logic of your microservice. It handles the logic for fetching cryptocurrency prices.
 
+
 logging:
 logginService struct is wrapper to PriceGetter interface using the key word "next"
 LogGetPrice: function that logs the execution of GetPrice in service.go AFTER it wwas executed using the defer keyword, using the logrus library
 Purpose: This file adds logging functionality this microservice. It wraps the price fetching logic in a logging service to track the time taken to execute and log the result.
-
-
 sirupsen/logrus for logging in login.go
+
+
+API
