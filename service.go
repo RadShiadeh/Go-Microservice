@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 // interface to get a price
@@ -31,6 +32,9 @@ var prices = map[string]float64{
 }
 
 func MockPriceApiCall(ctx context.Context, key string) (float64, error) {
+	//mimic the http roundtrip, needs to be replaced with gRPC and actual APIs
+	time.Sleep(100 * time.Millisecond)
+
 	price, token := prices[key]
 
 	if !token {

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"get-price/types"
 	"math/rand"
 	"net/http"
 )
@@ -13,16 +13,10 @@ type JSONAPIServer struct {
 	svc        PriceGetter
 }
 
-type PriceResponse struct {
-	Key   string  `json:"key"`
-	Price float64 `json:"price"`
-}
-
 type APIFunc func(context.Context, http.ResponseWriter, *http.Request) error
 
 func (s *JSONAPIServer) Run() {
 	http.HandleFunc("/", makeHTTPAPIFunc(s.HandleFetchPrice))
-
 	http.ListenAndServe(s.listenAddr, nil)
 }
 
@@ -45,7 +39,6 @@ func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
 
 func (s *JSONAPIServer) HandleFetchPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	key := r.URL.Query().Get("key")
-	fmt.Println(key, "keys getting set here")
 
 	price, err := s.svc.GetPrice(ctx, key)
 
@@ -54,7 +47,7 @@ func (s *JSONAPIServer) HandleFetchPrice(ctx context.Context, w http.ResponseWri
 		return nil
 	}
 
-	priceResponse := PriceResponse{
+	priceResponse := types.PriceResponse{
 		Price: price,
 		Key:   key,
 	}

@@ -1,23 +1,47 @@
 Building a microservice in GoLang, retieving the prices of some crypto assets
 Decorator pattern is used, so if I need to change the logic, I dont touch any other functionalities such as logging in the process
 in this microservice everything will be written in the root package (main) to avoid circular dependency
+- JSON or gRPC is because of speed otherwise no significant difference, string manipulation is expensive.... gRPC is done with two machines or clients while the browser sends JSON
 
 
-Service:
-service.go has a priceGetter interface and the function GetPrices... initially the service uses a mock prices map, and a function MockPriceAPICall to simulate getting the price from an API
-Purpose: This file contains the core "business" logic of your microservice. It handles the logic for fetching cryptocurrency prices.
+TYPES Package:
+    this is where all the types are defined... mostly the types such as PriceResponse that is used by more than one package and are shared
 
 
-logging:
-logginService struct is wrapper to PriceGetter interface using the key word "next"
-LogGetPrice: function that logs the execution of GetPrice in service.go AFTER it wwas executed using the defer keyword, using the logrus library
-Purpose: This file adds logging functionality this microservice. It wraps the price fetching logic in a logging service to track the time taken to execute and log the result.
-sirupsen/logrus for logging in login.go
+
+THE MAIN PACKAGE:
+    THE MICROSERVICE:
+        this exposes the endpoint and listens to requests, a client would interact with it and fetch the data from it
+
+        Service:
+        service.go has a priceGetter interface and the function GetPrices... initially the service uses a mock prices map, and a function MockPriceAPICall to simulate getting the price from an API
+        Purpose: This file contains the core "business" logic of the microservice. It handles the logic for getting crypto prices.
 
 
-API
-defines a simple http server that will retrieve a price using the PriceGetter service and return the json format to the user
-A higher order function makeHTTPAPIFun takes a defined function for handling api requests (APIFun) and converts  it to http.HandlerFunc (used by go HTTP srver). This returns a response in JSON format with key and price
-HandleFetchPrice method, handles the logic of getting the price
-WriteJson simply uses a predefined struct to send JSON back
-NEWJSONServer constructor create a new instance of JSONAPIServer with listenAddr (port) and service PriceGetter (interface)
+        logging:
+        logginService struct is wrapper to PriceGetter interface using the key word "next"
+        LogGetPrice: function that logs the execution of GetPrice in service.go AFTER it wwas executed using the defer keyword, using the logrus library
+        Purpose: This file adds logging functionality this microservice. It wraps the price fetching logic in a logging service to track the time taken to execute and log the result.
+        sirupsen/logrus for logging in login.go
+
+
+        API
+        defines a simple http server that will retrieve a price using the PriceGetter service and return the json format to the user
+        A higher order function makeHTTPAPIFun takes a defined function for handling api requests (APIFun) and converts  it to http.HandlerFunc (used by go HTTP srver). This returns a response in JSON format with key and price
+        HandleFetchPrice method, handles the logic of getting the price
+        WriteJson simply uses a predefined struct to send JSON back
+        NEWJSONServer constructor create a new instance of JSONAPIServer with listenAddr (port) and service PriceGetter (interface)
+
+
+THE CLIENT PACKAGE:
+    in its own file so it is importable, example, if we have a gateway that wants to use this service and it is written in Go, it can interact with the client to use the microservice
+
+    the Purpose of it is to make request to the microservice, retrieve the data and return it
+
+    client.go:
+        this creates the client that allows the use of the microservice (package main)
+        type client is a string the specifies the end point
+        NewClient returns a new client that uses the provided end point
+        
+        GetPrice uses the key given to it, to build the endpint, and send a new request to the endpoint, this calls the microservice and returns a response, 
+        the response is then is encode in Json and the type PriceResponse is the formatting of the returning JSON file.... defer is used to close the response after everything surrounding the func has executed
