@@ -29,7 +29,7 @@ func (s *priceGetter) GetPrice(ctx context.Context, key string) (float64, error)
 var prices = map[string]float64{
 	"BTC": 200000,
 	"ETH": 3000,
-}
+} //in mem data, need to replace with an actual API
 
 func MockPriceApiCall(ctx context.Context, key string) (float64, error) {
 	//mimic the http roundtrip, needs to be replaced with gRPC and actual APIs
