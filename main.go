@@ -12,7 +12,7 @@ func main() {
 	//metrics does nothing, just to show how different loggs or metrics can be wrapped
 	client := client.NewClient("http://localhost:3000")
 
-	price, err := client.GetPrice(context.Background(), "BsTC")
+	price, err := client.GetPrice(context.Background(), "BTC")
 
 	if err != nil {
 		log.Fatal(err)
