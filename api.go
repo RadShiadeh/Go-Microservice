@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 )
 
 type JSONAPIServer struct {
-	svc PriceGetter
+	listenAddr string
+	svc        PriceGetter
 }
 
 type PriceResponse struct {
@@ -19,7 +21,16 @@ type PriceResponse struct {
 type APIFunc func(context.Context, http.ResponseWriter, *http.Request) error
 
 func (s *JSONAPIServer) Run() {
-	//http.HandleFunc("/")
+	http.HandleFunc("/", makeHTTPAPIFunc(s.HandleFetchPrice))
+
+	http.ListenAndServe(s.listenAddr, nil)
+}
+
+func NewJSONAPIServer(listenAddr string, svc PriceGetter) *JSONAPIServer {
+	return &JSONAPIServer{
+		listenAddr: listenAddr,
+		svc:        svc,
+	}
 }
 
 func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
@@ -34,12 +45,13 @@ func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
 
 func (s *JSONAPIServer) HandleFetchPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	key := r.URL.Query().Get("key")
+	fmt.Println(key, "keys getting set here")
 
 	price, err := s.svc.GetPrice(ctx, key)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return err
+		return nil
 	}
 
 	priceResponse := PriceResponse{

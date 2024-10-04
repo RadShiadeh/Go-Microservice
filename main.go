@@ -1,20 +1,13 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"log"
-)
+import "flag"
 
 func main() {
 	//metrics does nothing, just to show how different loggs or metrics can be wrapped
+	listenAddr := flag.String("listenaddr", ":3000", "serivce is running")
 	svc := NewLoggingService(NewMetricsService(&priceGetter{}))
 
-	price, err := svc.GetPrice(context.Background(), "ETH")
-	if err != nil {
-		fmt.Println("err")
-		log.Fatal(err)
-	}
+	server := NewJSONAPIServer(*listenAddr, svc)
+	server.Run()
 
-	fmt.Println(price)
 }

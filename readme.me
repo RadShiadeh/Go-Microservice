@@ -16,3 +16,8 @@ sirupsen/logrus for logging in login.go
 
 
 API
+defines a simple http server that will retrieve a price using the PriceGetter service and return the json format to the user
+A higher order function makeHTTPAPIFun takes a defined function for handling api requests (APIFun) and converts  it to http.HandlerFunc (used by go HTTP srver). This returns a response in JSON format with key and price
+HandleFetchPrice method, handles the logic of getting the price
+WriteJson simply uses a predefined struct to send JSON back
+NEWJSONServer constructor create a new instance of JSONAPIServer with listenAddr (port) and service PriceGetter (interface)
