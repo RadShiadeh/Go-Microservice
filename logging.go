@@ -17,7 +17,7 @@ func NewLoggingService(next PriceGetter) PriceGetter {
 	}
 }
 
-func (s *loggingService) GetPrice(ctx context.Context, key string) (price float64, err error) {
+func (s *loggingService) GetPrice(ctx context.Context, key string, currency string) (price float64, err error) {
 	defer func(start time.Time) {
 		logrus.WithFields(logrus.Fields{
 			"requestID": ctx.Value("requestID"),
@@ -27,5 +27,5 @@ func (s *loggingService) GetPrice(ctx context.Context, key string) (price float6
 		}).Info("GetPrice")
 	}(time.Now())
 
-	return s.next.GetPrice(ctx, key)
+	return s.next.GetPrice(ctx, key, currency)
 }

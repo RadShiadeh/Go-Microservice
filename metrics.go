@@ -15,7 +15,7 @@ func NewMetricsService(next PriceGetter) PriceGetter {
 	}
 }
 
-func (s *metricsService) GetPrice(ctx context.Context, key string) (price float64, err error) {
+func (s *metricsService) GetPrice(ctx context.Context, key string, currency string) (price float64, err error) {
 	fmt.Println("wrapper with some metrics, testing only")
-	return s.next.GetPrice(ctx, key)
+	return s.next.GetPrice(ctx, key, currency)
 }

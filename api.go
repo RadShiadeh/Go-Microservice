@@ -39,8 +39,9 @@ func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
 
 func (s *JSONAPIServer) HandleFetchPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	key := r.URL.Query().Get("key")
+	currency := r.URL.Query().Get("curr")
 
-	price, err := s.svc.GetPrice(ctx, key)
+	price, err := s.svc.GetPrice(ctx, key, currency)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
