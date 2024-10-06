@@ -28,6 +28,7 @@ func NewJSONAPIServer(listenAddr string, svc PriceGetter) *JSONAPIServer {
 }
 
 func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
+
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "requestID", rand.Intn(1000000))
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +39,7 @@ func makeHTTPAPIFunc(apiFn APIFunc) http.HandlerFunc {
 }
 
 func (s *JSONAPIServer) HandleFetchPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+
 	key := r.URL.Query().Get("key")
 	currency := r.URL.Query().Get("curr")
 

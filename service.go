@@ -7,18 +7,15 @@ import (
 	"net/http"
 )
 
-// interface to get a price
 type PriceGetter interface {
 	GetPrice(context.Context, string, string) (float64, error)
 }
 
-// priceGetter implementing the PriceGetter interface
 type priceGetter struct{}
 
 func (s *priceGetter) GetPrice(ctx context.Context, key string, currency string) (float64, error) {
-	//business logic... important not to use types/ do it somewhere else
-	price, err := API(ctx, key, currency)
 
+	price, err := API(ctx, key, currency)
 	if err != nil {
 		return 0, fmt.Errorf("failed to fetch price for key %s: %v", key, err)
 	}
