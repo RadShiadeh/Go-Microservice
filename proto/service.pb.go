@@ -81,7 +81,7 @@ type PriceResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	Key   string  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Price float64 `protobuf:"fixed32,2,opt,name=price,proto3" json:"price,omitempty"`
+	Price float32 `protobuf:"fixed32,2,opt,name=price,proto3" json:"price,omitempty"`
 }
 
 func (x *PriceResponse) Reset() {
@@ -123,7 +123,7 @@ func (x *PriceResponse) GetKey() string {
 	return ""
 }
 
-func (x *PriceResponse) GetPrice() float64 {
+func (x *PriceResponse) GetPrice() float32 {
 	if x != nil {
 		return x.Price
 	}
