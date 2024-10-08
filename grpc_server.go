@@ -13,15 +13,15 @@ func CreateGRPCServerAndRun(listenAddr string, svc PriceGetter) error {
 
 	grpcPriceGetter := NewGrpcPriceService(svc)
 
-	lis, err := net.Listen("tcp", listenAddr)
-	if err != nil {
-		return err
-	}
-
 	options := []grpc.ServerOption{}
 	server := grpc.NewServer(options...)
 
 	proto.RegisterPriceGetterServer(server, grpcPriceGetter)
+
+	lis, err := net.Listen("tcp", listenAddr)
+	if err != nil {
+		return err
+	}
 
 	return server.Serve(lis)
 }
